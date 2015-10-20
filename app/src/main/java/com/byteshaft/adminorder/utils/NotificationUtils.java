@@ -25,9 +25,11 @@ public class NotificationUtils {
     }
 
     public void showNotificationMessage(String title, String message, Intent intent) {
-        if (TextUtils.isEmpty(message))
+        if (TextUtils.isEmpty(message)) {
+            System.out.println("msg empty");
             return;
-        if (isAppIsInBackground(AppGlobals.getContext())) {
+        }
+        System.out.println(isAppIsInBackground(AppGlobals.getContext()));
             // notification icon
             int icon = R.mipmap.ic_launcher;
             PendingIntent resultPendingIntent =
@@ -53,12 +55,10 @@ public class NotificationUtils {
             NotificationManager notificationManager = (NotificationManager)
                     AppGlobals.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(AppGlobals.NOTIFICATION_ID, notification);
-        } else {
-            intent.putExtra("title", title);
-            intent.putExtra("message", message);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            AppGlobals.getContext().startActivity(intent);
-        }
+//            intent.putExtra("title", title);
+//            intent.putExtra("message", message);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//            AppGlobals.getContext().startActivity(intent);
     }
 
     public static boolean isAppIsInBackground(Context context) {
