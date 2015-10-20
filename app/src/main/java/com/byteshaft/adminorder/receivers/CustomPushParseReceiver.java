@@ -38,7 +38,6 @@ public class CustomPushParseReceiver extends ParsePushBroadcastReceiver {
             JSONObject json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
 //            Log.e(AppGlobals.getLogTag(getClass()), "Push received: " + json);
             parseIntent = intent;
-            parsePushJson(context, json);
             String name = json.getString("name");
             String phone = json.getString("phone");
             String address = json.getString("address");
@@ -46,13 +45,11 @@ public class CustomPushParseReceiver extends ParsePushBroadcastReceiver {
             // etc that departmental store
             String from = json.getString("from");
             String delivery = json.getString("delivery_time");
-            String senderId = json.getString("sender_id");
-            System.out.println(name + phone + product + address + delivery + from + senderId);
-            ParseQuery<ParseInstallation> parseQuery = ParseQuery.getQuery(ParseInstallation.class);
-            parseQuery.whereEqualTo("user",senderId);
-            ParsePush.sendMessageInBackground(AppGlobals.PUSH_RESPONCE, parseQuery);
-            System.out.println("send responce");
-
+            AppGlobals.sSenderId = json.getString("sender_id").trim();
+            sendResponseToUser(AppGlobals.sSenderId);
+            System.out.println(name);
+            parsePushJson(name);
+            System.out.println(AppGlobals.sSenderId);
         } catch (JSONException e) {
             Log.e(AppGlobals.getLogTag(getClass()), "Push message json exception: " + e.getMessage());
         }
@@ -68,20 +65,10 @@ public class CustomPushParseReceiver extends ParsePushBroadcastReceiver {
         super.onPushOpen(context, intent);
     }
 
-    private void parsePushJson(Context context, JSONObject json) {
-        try {
-            boolean isBackground = json.getBoolean("is_background");
-            System.out.println(isBackground);
-            JSONObject data = json.getJSONObject("data");
-            String title = "New Order";
-            String message = data.getString("message");
-            if (!isBackground) {
-                Intent resultIntent = new Intent(context, MainActivity.class);
-                showNotificationMessage(title, message, resultIntent);
-            }
-        } catch (JSONException e) {
-            Log.e(AppGlobals.getLogTag(getClass()), "Push message json exception: " + e.getMessage());
-        }
+    private void parsePushJson(String message) {
+        String title = "New Order";
+        Intent resultIntent = new Intent(AppGlobals.getContext(), MainActivity.class);
+        showNotificationMessage(title, message, resultIntent);
     }
 
     private void showNotificationMessage(String title, String message, Intent intent) {
@@ -89,5 +76,18 @@ public class CustomPushParseReceiver extends ParsePushBroadcastReceiver {
         intent.putExtras(parseIntent.getExtras());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         notificationUtils.showNotificationMessage(title, message, intent);
+    }
+
+    private void sendResponseToUser(String senderId) {
+        ParseQuery<ParseInstallation> parseQuery = ParseQuery.getQuery(ParseInstallation.class);
+        parseQuery.whereEqualTo("user", senderId);
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("title" , "Thank You");
+            jsonObject.put("response", AppGlobals.PUSH_RESPONCE);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        ParsePush.sendDataInBackground(jsonObject, parseQuery);
     }
 }
