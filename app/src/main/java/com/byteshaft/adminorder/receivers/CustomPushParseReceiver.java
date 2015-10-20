@@ -7,17 +7,23 @@ import android.util.Log;
 import com.byteshaft.adminorder.AppGlobals;
 import com.byteshaft.adminorder.MainActivity;
 import com.byteshaft.adminorder.utils.NotificationUtils;
+import com.parse.ParseInstallation;
+import com.parse.ParsePush;
 import com.parse.ParsePushBroadcastReceiver;
+import com.parse.ParseQuery;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * Created by s9iper1 on 10/20/15.
- */
 public class CustomPushParseReceiver extends ParsePushBroadcastReceiver {
 
     private Intent parseIntent;
+    private String personName;
+    private String phoneNumber;
+    private String address;
+    private String product;
+    private String from;
+    private String deliveryTime;
 
     public CustomPushParseReceiver() {
         super();
@@ -30,9 +36,22 @@ public class CustomPushParseReceiver extends ParsePushBroadcastReceiver {
             return;
         try {
             JSONObject json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
-            Log.e(AppGlobals.getLogTag(getClass()), "Push received: " + json);
+//            Log.e(AppGlobals.getLogTag(getClass()), "Push received: " + json);
             parseIntent = intent;
             parsePushJson(context, json);
+            String name = json.getString("name");
+            String phone = json.getString("phone");
+            String address = json.getString("address");
+            String product = json.getString("product");
+            // etc that departmental store
+            String from = json.getString("from");
+            String delivery = json.getString("delivery_time");
+            String senderId = json.getString("sender_id");
+            System.out.println(name + phone + product + address + delivery + from + senderId);
+            ParseQuery<ParseInstallation> parseQuery = ParseQuery.getQuery(ParseInstallation.class);
+            parseQuery.whereEqualTo("user",senderId);
+            ParsePush.sendMessageInBackground(AppGlobals.PUSH_RESPONCE, parseQuery);
+            System.out.println("send responce");
 
         } catch (JSONException e) {
             Log.e(AppGlobals.getLogTag(getClass()), "Push message json exception: " + e.getMessage());
@@ -52,8 +71,9 @@ public class CustomPushParseReceiver extends ParsePushBroadcastReceiver {
     private void parsePushJson(Context context, JSONObject json) {
         try {
             boolean isBackground = json.getBoolean("is_background");
+            System.out.println(isBackground);
             JSONObject data = json.getJSONObject("data");
-            String title = data.getString("title");
+            String title = "New Order";
             String message = data.getString("message");
             if (!isBackground) {
                 Intent resultIntent = new Intent(context, MainActivity.class);

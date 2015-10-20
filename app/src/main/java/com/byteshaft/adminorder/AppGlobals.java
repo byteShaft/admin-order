@@ -13,6 +13,7 @@ public class AppGlobals extends Application {
     public static final String APP_ID = "EieYzwuvJCqr2xFlwy8n7MAuofRj4LHa1F1MCudO";
     public static final String CLIENT_ID = "9sIi4bCDTLYXzd5y0JG5pBaAwaqzJVzlZnfiTvdk";
     public static final int NOTIFICATION_ID = 2112;
+    public static final String PUSH_RESPONCE = "we have received  your request";
 
     @Override
     public void onCreate() {
