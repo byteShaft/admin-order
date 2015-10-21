@@ -13,7 +13,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,7 +24,7 @@ import com.byteshaft.adminorder.database.DatabaseHelpers;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener {
 
     private ArrayList<String> ordersPhoneNumber;
     private ListView mListView;
@@ -109,6 +111,11 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+    }
+
     class PhoneArrayAdapter extends ArrayAdapter<String> {
 
         public PhoneArrayAdapter(Context context, int resource, ArrayList<String> videos) {
@@ -123,21 +130,26 @@ public class MainActivity extends AppCompatActivity
                 convertView = inflater.inflate(R.layout.row, parent, false);
                 holder = new ViewHolder();
                 holder.number = (TextView) convertView.findViewById(R.id.number);
-                holder.deliveryTime = (TextView) convertView.findViewById(R.id.delivery_time);
+                holder.status = (ImageView) convertView.findViewById(R.id.delivery_time);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
             String number = ordersPhoneNumber.get(position);
             holder.number.setText(number);
-            holder.deliveryTime.setText(mDatabaseHelpers.getDeliveryTime(number));
+            if (mDatabaseHelpers.getShippingStatus(number)) {
+                holder.status.setBackground(getResources().getDrawable(R.drawable.ic_done_gray));
+            } else {
+                holder.status.setBackground(getResources().getDrawable(R.drawable.ic_done_green));
+
+            }
             return convertView;
         }
     }
 
     static class ViewHolder {
         public TextView number;
-        public TextView deliveryTime;
+        public ImageView status;
     }
 
 

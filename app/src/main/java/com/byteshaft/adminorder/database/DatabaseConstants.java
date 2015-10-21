@@ -15,16 +15,24 @@ public class DatabaseConstants {
     public static final String ORDER_STATUS_COLUMN = "order_status";
     public static final String CURRENT_TIME_DATE = "current_time_date";
 
-    public static final String TABLE_CREATE =
-            "CREATE TABLE " +
-                    TABLE_NAME + "(" +
-                    NAME_COLUMN + " TEXT , " +
-                    ADDRESS_COLUMN + " TEXT , " +
-                    MOBILE_NUMBER_COLUMN + " TEXT  , " +
-                    PRODUCT_COLUMN + " TEXT , " +
-                    ORDER_PLACE_COLUMN + " TEXT , " +
-                    DELIVERY_TIME_COLUMN + " TEXT , " +
-                    ORDER_STATUS_COLUMN + " TEXT , " +
-                    CURRENT_TIME_DATE + " TEXT " +
-                      " ) ";
+    public static final String CREATE_PARENT_TABLE = "CREATE TABLE " +
+    TABLE_NAME + "(" +
+    MOBILE_NUMBER_COLUMN + " TEXT  PRIMARY KEY, " +
+            CURRENT_TIME_DATE + " TEXT " +
+            " ) ";
+
+    public static String createTable(String tablename) {
+                return "CREATE TABLE " +
+                        ("table"+tablename) + "(" +
+                        NAME_COLUMN + " TEXT , " +
+                        ADDRESS_COLUMN + " TEXT , " +
+                        PRODUCT_COLUMN + " TEXT , " +
+                        ORDER_PLACE_COLUMN + " TEXT , " +
+                        DELIVERY_TIME_COLUMN + " TEXT , " +
+                        ORDER_STATUS_COLUMN + " TEXT , " +
+                        CURRENT_TIME_DATE + " TEXT " +
+                        " ) ";
+
+    }
+
 }
