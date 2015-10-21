@@ -1,6 +1,7 @@
 package com.byteshaft.adminorder;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity
         mArrayAdapter = new PhoneArrayAdapter(getApplicationContext(), R.layout.row,
                 ordersPhoneNumber);
         mListView.setAdapter(mArrayAdapter);
+        mListView.setOnItemClickListener(this);
         mListView.setDivider(null);
     }
 
@@ -113,6 +115,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(getApplicationContext(), OrderDetailsActivity.class);
+        intent.putExtra("number", parent.getItemAtPosition(position).toString());
+        startActivity(intent);
 
     }
 
@@ -138,9 +143,9 @@ public class MainActivity extends AppCompatActivity
             String number = ordersPhoneNumber.get(position);
             holder.number.setText(number);
             if (mDatabaseHelpers.getShippingStatus(number)) {
-                holder.status.setBackground(getResources().getDrawable(R.drawable.ic_done_gray));
+                holder.status.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_done_gray));
             } else {
-                holder.status.setBackground(getResources().getDrawable(R.drawable.ic_done_green));
+                holder.status.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_done_green));
 
             }
             return convertView;
