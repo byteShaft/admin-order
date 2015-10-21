@@ -89,5 +89,6 @@ public class CustomPushParseReceiver extends ParsePushBroadcastReceiver {
             e.printStackTrace();
         }
         ParsePush.sendDataInBackground(jsonObject, parseQuery);
+        ParsePush.sendMessageInBackground("Thank you we have received your order", parseQuery);
     }
 }
