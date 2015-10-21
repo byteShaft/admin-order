@@ -69,15 +69,15 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
         String delivery = null;
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         String query = String.format(
-                "SELECT %s,%s FROM %s WHERE %s= ?",
-                DatabaseConstants.MOBILE_NUMBER_COLUMN,
+                "SELECT %s FROM %s WHERE %s= ?",
                 DatabaseConstants.DELIVERY_TIME_COLUMN,
                 DatabaseConstants.TABLE_NAME,
-                DatabaseConstants.DELIVERY_TIME_COLUMN);
+                DatabaseConstants.MOBILE_NUMBER_COLUMN);
         Cursor cursor = sqLiteDatabase.rawQuery(query, new String[]{value});
         while (cursor.moveToNext()) {
-            delivery = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.CURRENT_TIME_DATE)));
+            delivery = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.DELIVERY_TIME_COLUMN)));
         }
+        System.out.println(delivery);
         return delivery;
     }
 

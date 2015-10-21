@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="80dp"
+    android:layout_height="70dp"
     android:orientation="horizontal"
     android:weightSum="100"
     android:layout_margin="2dp"
@@ -27,6 +27,8 @@
 
     <TextView
         android:id="@+id/delivery_time"
+        android:textColor="#009900"
+        android:layout_marginTop="20dp"
         android:layout_width="35dp"
         android:layout_height="wrap_content"/>
 </LinearLayout>
