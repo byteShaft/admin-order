@@ -24,7 +24,7 @@ public class NotificationUtils {
             return;
         }
             // notification icon
-            int icon = R.mipmap.ic_launcher;
+            int icon = R.drawable.ic_notification;
             PendingIntent resultPendingIntent =
                     PendingIntent.getActivity(
                             AppGlobals.getContext(),

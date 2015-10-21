@@ -20,7 +20,7 @@ public class DatabaseConstants {
                     TABLE_NAME + "(" +
                     NAME_COLUMN + " TEXT , " +
                     ADDRESS_COLUMN + " TEXT , " +
-                    MOBILE_NUMBER_COLUMN + " TEXT  PRIMARY KEY , " +
+                    MOBILE_NUMBER_COLUMN + " TEXT  , " +
                     PRODUCT_COLUMN + " TEXT , " +
                     ORDER_PLACE_COLUMN + " TEXT , " +
                     DELIVERY_TIME_COLUMN + " TEXT , " +

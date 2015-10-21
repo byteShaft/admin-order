@@ -58,7 +58,7 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
         while (cursor.moveToNext()) {
             String itemname = cursor.getString(cursor.getColumnIndex(
                     DatabaseConstants.MOBILE_NUMBER_COLUMN));
-            if (itemname != null) {
+            if (itemname != null && !arrayList.contains(itemname)) {
                 arrayList.add(itemname);
             }
         }
