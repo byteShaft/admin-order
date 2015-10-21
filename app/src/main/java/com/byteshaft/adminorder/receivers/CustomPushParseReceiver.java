@@ -84,7 +84,7 @@ public class CustomPushParseReceiver extends ParsePushBroadcastReceiver {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("title" , "Thank You");
-            jsonObject.put("response", AppGlobals.PUSH_RESPONCE);
+            jsonObject.put("response", AppGlobals.PUSH_RESPONSE);
         } catch (JSONException e) {
             e.printStackTrace();
         }

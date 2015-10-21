@@ -13,6 +13,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.byteshaft.adminorder.database.DatabaseConstants;
+import com.byteshaft.adminorder.database.DatabaseHelpers;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -20,6 +23,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        DatabaseHelpers databaseHelpers = new DatabaseHelpers(AppGlobals.getContext());
+        databaseHelpers.createNewEntry("name","address", "mobile_number", "product_name", "place_location",
+                "delivery_time", "order_status","current_time_date");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
