@@ -3,9 +3,9 @@ package com.byteshaft.adminorder.database;
 
 public class DatabaseConstants {
 
-    public static final String DATABASE_NAME = "order_booker_database";
+    public static final String DATABASE_NAME = "orderBooker";
     public static final int DATABASE_VERSION = 1;
-    public static final String TABLE_NAME = "order_booker";
+    public static final String TABLE_NAME = "orderBooker";
     public static final String NAME_COLUMN = "name";
     public static final String ADDRESS_COLUMN = "address";
     public static final String MOBILE_NUMBER_COLUMN = "mobile_number";
@@ -20,7 +20,7 @@ public class DatabaseConstants {
                     TABLE_NAME + "(" +
                     NAME_COLUMN + " TEXT , " +
                     ADDRESS_COLUMN + " TEXT , " +
-                    MOBILE_NUMBER_COLUMN + " TEXT , " +
+                    MOBILE_NUMBER_COLUMN + " TEXT  PRIMARY KEY , " +
                     PRODUCT_COLUMN + " TEXT , " +
                     ORDER_PLACE_COLUMN + " TEXT , " +
                     DELIVERY_TIME_COLUMN + " TEXT , " +

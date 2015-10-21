@@ -6,6 +6,8 @@ import android.util.Log;
 
 import com.byteshaft.adminorder.AppGlobals;
 import com.byteshaft.adminorder.MainActivity;
+import com.byteshaft.adminorder.database.DatabaseHelpers;
+import com.byteshaft.adminorder.utils.Helpers;
 import com.byteshaft.adminorder.utils.NotificationUtils;
 import com.parse.ParseInstallation;
 import com.parse.ParsePush;
@@ -24,9 +26,11 @@ public class CustomPushParseReceiver extends ParsePushBroadcastReceiver {
     private String product;
     private String from;
     private String deliveryTime;
+    private DatabaseHelpers mDatabaseHelpers;
 
     public CustomPushParseReceiver() {
         super();
+        mDatabaseHelpers = new DatabaseHelpers(AppGlobals.getContext());
     }
 
     @Override
@@ -36,7 +40,6 @@ public class CustomPushParseReceiver extends ParsePushBroadcastReceiver {
             return;
         try {
             JSONObject json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
-//            Log.e(AppGlobals.getLogTag(getClass()), "Push received: " + json);
             parseIntent = intent;
             String name = json.getString("name");
             String phone = json.getString("phone");
@@ -47,9 +50,9 @@ public class CustomPushParseReceiver extends ParsePushBroadcastReceiver {
             String delivery = json.getString("delivery_time");
             AppGlobals.sSenderId = json.getString("sender_id").trim();
             sendResponseToUser(AppGlobals.sSenderId);
-            System.out.println(name);
-            parsePushJson(name);
-            System.out.println(AppGlobals.sSenderId);
+            mDatabaseHelpers.createNewEntry(name, address, phone, product, from, delivery, "0",
+                    Helpers.getTimeStampForDatabase());
+            parsePushJson(product);
         } catch (JSONException e) {
             Log.e(AppGlobals.getLogTag(getClass()), "Push message json exception: " + e.getMessage());
         }
@@ -81,14 +84,6 @@ public class CustomPushParseReceiver extends ParsePushBroadcastReceiver {
     private void sendResponseToUser(String senderId) {
         ParseQuery<ParseInstallation> parseQuery = ParseQuery.getQuery(ParseInstallation.class);
         parseQuery.whereEqualTo("user", senderId);
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("title" , "Thank You");
-            jsonObject.put("response", AppGlobals.PUSH_RESPONSE);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        ParsePush.sendDataInBackground(jsonObject, parseQuery);
         ParsePush.sendMessageInBackground("Thank you we have received your order", parseQuery);
     }
 }

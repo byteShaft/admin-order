@@ -9,7 +9,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.byteshaft.adminorder.AppGlobals;
-import com.byteshaft.adminorder.utils.Helpers;
+
+import java.util.ArrayList;
 
 public class DatabaseHelpers extends SQLiteOpenHelper {
 
@@ -43,10 +44,41 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
         values.put(DatabaseConstants.DELIVERY_TIME_COLUMN, orderTime);
         values.put(DatabaseConstants.ORDER_STATUS_COLUMN, status);
         values.put(DatabaseConstants.CURRENT_TIME_DATE, currentTimeDate);
-
         sqLiteDatabase.insert(DatabaseConstants.TABLE_NAME, null, values);
         Log.i(AppGlobals.getLogTag(getClass()), "created New Entry");
         sqLiteDatabase.close();
+    }
+
+    public ArrayList<String> getAllPhoneNumbers() {
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        String query = "SELECT * FROM " + DatabaseConstants.TABLE_NAME + " ORDER BY " +
+                DatabaseConstants.CURRENT_TIME_DATE + " DESC";
+        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+        ArrayList<String> arrayList = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            String itemname = cursor.getString(cursor.getColumnIndex(
+                    DatabaseConstants.MOBILE_NUMBER_COLUMN));
+            if (itemname != null) {
+                arrayList.add(itemname);
+            }
+        }
+        return arrayList;
+    }
+
+    public String getDeliveryTime(String value) {
+        String delivery = null;
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        String query = String.format(
+                "SELECT %s,%s FROM %s WHERE %s= ?",
+                DatabaseConstants.MOBILE_NUMBER_COLUMN,
+                DatabaseConstants.DELIVERY_TIME_COLUMN,
+                DatabaseConstants.TABLE_NAME,
+                DatabaseConstants.DELIVERY_TIME_COLUMN);
+        Cursor cursor = sqLiteDatabase.rawQuery(query, new String[]{value});
+        while (cursor.moveToNext()) {
+            delivery = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.CURRENT_TIME_DATE)));
+        }
+        return delivery;
     }
 
 //    public void updateCategory(String name) {

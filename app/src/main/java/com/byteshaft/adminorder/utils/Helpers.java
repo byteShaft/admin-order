@@ -7,9 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-/**
- * Created by husnain on 10/21/15.
- */
 public class Helpers extends ContextWrapper {
 
     public Helpers(Context base) {
