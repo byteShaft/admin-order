@@ -49,9 +49,10 @@ public class CustomPushParseReceiver extends ParsePushBroadcastReceiver {
             String from = json.getString("from");
             String delivery = json.getString("delivery_time");
             AppGlobals.sSenderId = json.getString("sender_id").trim();
+            mDatabaseHelpers.insertValuesCheckIfNotExist(phone, name, address, product, from, delivery,
+                    "0", Helpers.getTimeStampForDatabase());
             sendResponseToUser(AppGlobals.sSenderId);
-            mDatabaseHelpers.createNewEntry(name, address, phone, product, from, delivery, "0",
-                    Helpers.getTimeStampForDatabase());
+            mDatabaseHelpers.insertIntParentColumn(phone,Helpers.getTimeStampForDatabase());
             parsePushJson(product);
         } catch (JSONException e) {
             Log.e(AppGlobals.getLogTag(getClass()), "Push message json exception: " + e.getMessage());

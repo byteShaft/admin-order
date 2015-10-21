@@ -22,7 +22,7 @@ public class AppGlobals extends Application {
         sContext = getApplicationContext();
         Parse.initialize(this, APP_ID , CLIENT_ID);
         ParseInstallation installation = ParseInstallation.getCurrentInstallation();
-        installation.put("admin", "admin_order_receiver");
+        installation.put("test", "test");
         installation.saveInBackground();
     }
 
