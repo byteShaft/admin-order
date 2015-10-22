@@ -14,7 +14,7 @@ public class OrderFragment  extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mBaseView = inflater.inflate(R.layout.deliver, container, false);
+        mBaseView = inflater.inflate(R.layout.order_fragment, container, false);
         return mBaseView;
     }
 }
