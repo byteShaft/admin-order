@@ -115,7 +115,6 @@ public class OrderDetailsActivity extends AppCompatActivity implements AdapterVi
             switch (v.getId()) {
                 case R.id.status:
                     System.out.println(sCurrentClickValue);
-                    System.out.println("ok");
 
                     break;
             }
