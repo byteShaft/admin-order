@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
-        <item android:id="@+id/orders"
-            android:icon="@drawable/orders"
-            android:title="Orders" />
-        <item android:id="@+id/deliver"
-            android:icon="@drawable/deliver"
-            android:title="Delivered" />
-    </group>
+    <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="Communicate">
-        <menu>
-            <item android:id="@+id/nav_share"
-                android:icon="@android:drawable/ic_menu_share"
-                android:title="Share" />
-        </menu>
-    </item>
+        <group android:checkableBehavior="single">
+            <item
+                android:id="@+id/orders_fragment"
+                android:icon="@drawable/orders"
+                android:title="Order" />
 
-</menu>
+            <item android:id="@+id/deliver_fragment"
+                android:icon="@drawable/deliver"
+                android:title="Delivered" />
+        </group>
+    </menu>
