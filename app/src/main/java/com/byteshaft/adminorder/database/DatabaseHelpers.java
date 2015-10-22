@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
@@ -20,7 +21,7 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(DatabaseConstants.TABLE_CREATE);
+        db.execSQL(DatabaseConstants.CREATE_PARENT_TABLE);
         Log.i(AppGlobals.getLogTag(getClass()), "Database created !!!");
     }
 
@@ -28,6 +29,26 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS" + DatabaseConstants.TABLE_NAME);
         onCreate(db);
+    }
+
+    public boolean insertValuesCheckIfNotExist(String number, String name, String address, String product,
+                                   String orderPlace, String orderTime, String status,
+                                   String currentTimeDate) {
+        SQLiteDatabase myDb = this.getWritableDatabase();
+        boolean exist;
+        try {
+            Cursor c = myDb.rawQuery("select * from " + ("table"+number), null);
+            Log.i(AppGlobals.getLogTag(getClass()), "table exist");
+            createNewEntry(name, address, number, product, orderPlace, orderTime, status,
+                    currentTimeDate);
+            return true;
+        } catch (SQLiteException e) {
+            myDb.execSQL(DatabaseConstants.createTable(number));
+            Log.i(AppGlobals.getLogTag(getClass()), "table created");
+            createNewEntry(name, address, number, product, orderPlace, orderTime, status,
+                    currentTimeDate);
+            return false;
+        }
     }
 
     public void createNewEntry(String name, String address, String mobileNumber,
@@ -38,15 +59,25 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(DatabaseConstants.NAME_COLUMN, name);
         values.put(DatabaseConstants.ADDRESS_COLUMN, address);
-        values.put(DatabaseConstants.MOBILE_NUMBER_COLUMN, mobileNumber);
         values.put(DatabaseConstants.PRODUCT_COLUMN, productName);
         values.put(DatabaseConstants.ORDER_PLACE_COLUMN, orderPlace);
         values.put(DatabaseConstants.DELIVERY_TIME_COLUMN, orderTime);
         values.put(DatabaseConstants.ORDER_STATUS_COLUMN, status);
         values.put(DatabaseConstants.CURRENT_TIME_DATE, currentTimeDate);
+        sqLiteDatabase.insert(("table"+mobileNumber), null, values);
+        Log.i(AppGlobals.getLogTag(getClass()), "created New Entry");
+        sqLiteDatabase.close();
+    }
+
+    public void insertIntParentColumn(String phone, String timeDate) {
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DatabaseConstants.MOBILE_NUMBER_COLUMN, phone);
+        values.put(DatabaseConstants.CURRENT_TIME_DATE, timeDate);
         sqLiteDatabase.insert(DatabaseConstants.TABLE_NAME, null, values);
         Log.i(AppGlobals.getLogTag(getClass()), "created New Entry");
         sqLiteDatabase.close();
+
     }
 
     public ArrayList<String> getAllPhoneNumbers() {
@@ -58,27 +89,30 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
         while (cursor.moveToNext()) {
             String itemname = cursor.getString(cursor.getColumnIndex(
                     DatabaseConstants.MOBILE_NUMBER_COLUMN));
-            if (itemname != null) {
+            if (itemname != null && !arrayList.contains(itemname)) {
                 arrayList.add(itemname);
             }
         }
         return arrayList;
     }
 
-    public String getDeliveryTime(String value) {
+    public boolean getShippingStatus(String value) {
         String delivery = null;
+        boolean status = false;
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         String query = String.format(
-                "SELECT %s,%s FROM %s WHERE %s= ?",
-                DatabaseConstants.MOBILE_NUMBER_COLUMN,
-                DatabaseConstants.DELIVERY_TIME_COLUMN,
-                DatabaseConstants.TABLE_NAME,
-                DatabaseConstants.DELIVERY_TIME_COLUMN);
-        Cursor cursor = sqLiteDatabase.rawQuery(query, new String[]{value});
+                "SELECT %s FROM %s WHERE %s= ?",
+                DatabaseConstants.ORDER_STATUS_COLUMN,
+                ("table" + value),
+                DatabaseConstants.ORDER_STATUS_COLUMN);
+        Cursor cursor = sqLiteDatabase.rawQuery(query, new String[]{"0"});
         while (cursor.moveToNext()) {
-            delivery = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.CURRENT_TIME_DATE)));
+            delivery = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.ORDER_STATUS_COLUMN)));
+            if (delivery.equals("0")) {
+                status = true;
+            }
         }
-        return delivery;
+        return status;
     }
 
 //    public void updateCategory(String name) {

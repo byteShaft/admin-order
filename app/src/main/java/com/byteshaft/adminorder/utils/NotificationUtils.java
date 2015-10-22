@@ -21,11 +21,10 @@ public class NotificationUtils {
 
     public void showNotificationMessage(String title, String message, Intent intent) {
         if (TextUtils.isEmpty(message)) {
-            System.out.println("msg empty");
             return;
         }
             // notification icon
-            int icon = R.mipmap.ic_launcher;
+            int icon = R.drawable.ic_notification;
             PendingIntent resultPendingIntent =
                     PendingIntent.getActivity(
                             AppGlobals.getContext(),
@@ -39,11 +38,11 @@ public class NotificationUtils {
             Notification notification = mBuilder.setSmallIcon(icon).setTicker(title).setWhen(0)
                     .setAutoCancel(true)
                     .setContentTitle(title)
+                    .setContentText(message)
                     .setStyle(inboxStyle)
                     .setContentIntent(resultPendingIntent)
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                     .setLargeIcon(BitmapFactory.decodeResource(AppGlobals.getContext().getResources(), icon))
-                    .setContentText(message)
                     .build();
 
             NotificationManager notificationManager = (NotificationManager)
