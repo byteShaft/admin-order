@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:weightSum="100"
+    android:layout_margin="2dp"
+    android:background="#7F7FFF"
+    android:padding="2dp">
+
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="70"
+        android:padding="2dp">
+
+        <TextView
+            android:id="@+id/product"
+            android:layout_width="180dp"
+            android:textColor="@android:color/white"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"
+            android:textSize="13sp"/>
+
+        <TextView
+            android:id="@+id/deliveryTime"
+            android:textSize="10sp"
+            android:paddingLeft="10dp"
+            android:textStyle="italic"
+            android:gravity="center_vertical"
+            android:textColor="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:padding="10dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginEnd="2dp"
+        android:id="@+id/status"
+        android:layout_gravity="right"
+        android:layout_weight="70" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:orientation="horizontal"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/orderPlace"
+            android:textSize="12sp"
+            android:text="delivery time"
+            android:paddingLeft="5dp"
+            android:gravity="center_vertical"
+            android:textColor="@android:color/white"
+            android:layout_width="200dp"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/receiveTime"
+            android:textSize="10sp"
+            android:text="delivery time"
+            android:paddingLeft="2dp"
+            android:textStyle="italic"
+            android:gravity="center_vertical"
+            android:textColor="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/address"
+        android:textSize="12sp"
+        android:text="delivery time"
+        android:paddingLeft="5dp"
+        android:gravity="center_vertical"
+        android:textColor="@android:color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="70" />
+</LinearLayout>

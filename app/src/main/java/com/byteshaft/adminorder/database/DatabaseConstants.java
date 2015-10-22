@@ -17,14 +17,13 @@ public class DatabaseConstants {
 
     public static final String CREATE_PARENT_TABLE = "CREATE TABLE " +
     TABLE_NAME + "(" +
-    MOBILE_NUMBER_COLUMN + " TEXT  PRIMARY KEY, " +
+    NAME_COLUMN + " TEXT  PRIMARY KEY, " +
             CURRENT_TIME_DATE + " TEXT " +
             " ) ";
 
     public static String createTable(String tablename) {
                 return "CREATE TABLE " +
                         ("table"+tablename) + "(" +
-                        NAME_COLUMN + " TEXT , " +
                         ADDRESS_COLUMN + " TEXT , " +
                         PRODUCT_COLUMN + " TEXT , " +
                         ORDER_PLACE_COLUMN + " TEXT , " +
