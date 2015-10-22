@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity
                 holder = new ViewHolder();
                 holder.number = (TextView) convertView.findViewById(R.id.number);
                 holder.latestProduct = (TextView) convertView.findViewById(R.id.latestProducts);
-                holder.status = (ImageView) convertView.findViewById(R.id.delivery_time);
+                holder.status = (ImageView) convertView.findViewById(R.id.status_for_user);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();

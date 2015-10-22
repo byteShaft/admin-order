@@ -31,7 +31,7 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/delivery_time"
-        android:layout_width="35dp"
-        android:layout_height="wrap_content" />
+        android:id="@+id/status_for_user"
+        android:layout_width="20dp"
+        android:layout_height="20dp" />
 </LinearLayout>
