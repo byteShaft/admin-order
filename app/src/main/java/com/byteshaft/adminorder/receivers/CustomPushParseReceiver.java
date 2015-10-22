@@ -42,17 +42,16 @@ public class CustomPushParseReceiver extends ParsePushBroadcastReceiver {
             JSONObject json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
             parseIntent = intent;
             String name = json.getString("name");
-            String phone = json.getString("phone");
             String address = json.getString("address");
             String product = json.getString("product");
             // etc that departmental store
             String from = json.getString("from");
             String delivery = json.getString("delivery_time");
             AppGlobals.sSenderId = json.getString("sender_id").trim();
-            mDatabaseHelpers.insertValuesCheckIfNotExist(phone, name, address, product, from, delivery,
+            mDatabaseHelpers.insertValuesCheckIfNotExist(name, address, product, from, delivery,
                     "0", Helpers.getTimeStampForDatabase());
             sendResponseToUser(AppGlobals.sSenderId);
-            mDatabaseHelpers.insertIntParentColumn(phone,Helpers.getTimeStampForDatabase());
+            mDatabaseHelpers.insertIntParentColumn(name,Helpers.getTimeStampForDatabase());
             parsePushJson(product);
         } catch (JSONException e) {
             Log.e(AppGlobals.getLogTag(getClass()), "Push message json exception: " + e.getMessage());

@@ -9,6 +9,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -116,7 +117,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getApplicationContext(), OrderDetailsActivity.class);
-        intent.putExtra("number", parent.getItemAtPosition(position).toString());
+        intent.putExtra("name", parent.getItemAtPosition(position).toString());
         startActivity(intent);
 
     }
@@ -135,14 +136,18 @@ public class MainActivity extends AppCompatActivity
                 convertView = inflater.inflate(R.layout.row, parent, false);
                 holder = new ViewHolder();
                 holder.number = (TextView) convertView.findViewById(R.id.number);
+                holder.latestProduct = (TextView) convertView.findViewById(R.id.latestProducts);
                 holder.status = (ImageView) convertView.findViewById(R.id.delivery_time);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            String number = ordersPhoneNumber.get(position);
-            holder.number.setText(number);
-            if (mDatabaseHelpers.getShippingStatus(number)) {
+            String name = ordersPhoneNumber.get(position);
+            String latestItem = mDatabaseHelpers.getLatestOrder(name);
+            Log.i("that", latestItem);
+            holder.latestProduct.setText(latestItem);
+            holder.number.setText(name);
+            if (mDatabaseHelpers.getShippingStatus(name)) {
                 holder.status.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_done_gray));
             } else {
                 holder.status.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_done_green));
@@ -154,6 +159,7 @@ public class MainActivity extends AppCompatActivity
 
     static class ViewHolder {
         public TextView number;
+        public TextView latestProduct;
         public ImageView status;
     }
 

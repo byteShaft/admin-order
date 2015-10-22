@@ -31,42 +31,42 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertValuesCheckIfNotExist(String number, String name, String address, String product,
+    public boolean insertValuesCheckIfNotExist(String name, String address, String product,
                                    String orderPlace, String orderTime, String status,
                                    String currentTimeDate) {
+        String trimmedName = name.replaceAll(" ", "");
         SQLiteDatabase myDb = this.getWritableDatabase();
         boolean exist;
         try {
-            Cursor c = myDb.rawQuery("select * from " + ("table"+number), null);
+            Cursor c = myDb.rawQuery("select * from " + ("table"+trimmedName), null);
             Log.i(AppGlobals.getLogTag(getClass()), "table exist");
-            createNewEntry(name, address, number, product, orderPlace, orderTime, status,
+            createNewEntry(trimmedName, address, product, orderPlace, orderTime, status,
                     currentTimeDate);
             myDb.close();
             return true;
         } catch (SQLiteException e) {
-            myDb.execSQL(DatabaseConstants.createTable(number));
+            System.out.println(trimmedName);
+            myDb.execSQL(DatabaseConstants.createTable(trimmedName));
             Log.i(AppGlobals.getLogTag(getClass()), "table created");
-            createNewEntry(name, address, number, product, orderPlace, orderTime, status,
+            createNewEntry(trimmedName, address, product, orderPlace, orderTime, status,
                     currentTimeDate);
             myDb.close();
             return false;
         }
     }
 
-    public void createNewEntry(String name, String address, String mobileNumber,
-                               String productName, String orderPlace, String orderTime,
-                               String status, String currentTimeDate) {
+    public void createNewEntry(String name, String address,String productName, String orderPlace,
+                               String orderTime, String status, String currentTimeDate) {
 
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DatabaseConstants.NAME_COLUMN, name);
         values.put(DatabaseConstants.ADDRESS_COLUMN, address);
         values.put(DatabaseConstants.PRODUCT_COLUMN, productName);
         values.put(DatabaseConstants.ORDER_PLACE_COLUMN, orderPlace);
         values.put(DatabaseConstants.DELIVERY_TIME_COLUMN, orderTime);
         values.put(DatabaseConstants.ORDER_STATUS_COLUMN, status);
         values.put(DatabaseConstants.CURRENT_TIME_DATE, currentTimeDate);
-        sqLiteDatabase.insert(("table"+mobileNumber), null, values);
+        sqLiteDatabase.insert(("table"+name), null, values);
         Log.i(AppGlobals.getLogTag(getClass()), "created New Entry");
         sqLiteDatabase.close();
     }
@@ -74,7 +74,7 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
     public void insertIntParentColumn(String phone, String timeDate) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DatabaseConstants.MOBILE_NUMBER_COLUMN, phone);
+        values.put(DatabaseConstants.NAME_COLUMN, phone);
         values.put(DatabaseConstants.CURRENT_TIME_DATE, timeDate);
         sqLiteDatabase.insert(DatabaseConstants.TABLE_NAME, null, values);
         Log.i(AppGlobals.getLogTag(getClass()), "created New Entry");
@@ -90,7 +90,7 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
         ArrayList<String> arrayList = new ArrayList<>();
         while (cursor.moveToNext()) {
             String itemname = cursor.getString(cursor.getColumnIndex(
-                    DatabaseConstants.MOBILE_NUMBER_COLUMN));
+                    DatabaseConstants.NAME_COLUMN));
             if (itemname != null && !arrayList.contains(itemname)) {
                 arrayList.add(itemname);
             }
@@ -100,8 +100,9 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
     }
 
     public ArrayList<String> getAllProducts(String tablename) {
+        String trimmedName = tablename.replaceAll(" ", "");
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-        String query = "SELECT * FROM " + tablename + " ORDER BY " +
+        String query = "SELECT * FROM " + trimmedName + " ORDER BY " +
                 DatabaseConstants.CURRENT_TIME_DATE + " DESC";
         Cursor cursor = sqLiteDatabase.rawQuery(query, null);
         ArrayList<String> arrayList = new ArrayList<>();
@@ -118,12 +119,14 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
 
     public boolean getShippingStatus(String value) {
         String delivery = null;
+        String trimmedName = value.replaceAll(" ", "");
+        System.out.println(value);
         boolean status = false;
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         String query = String.format(
                 "SELECT %s FROM %s WHERE %s= ?",
                 DatabaseConstants.ORDER_STATUS_COLUMN,
-                ("table" + value),
+                ("table" + trimmedName),
                 DatabaseConstants.ORDER_STATUS_COLUMN);
         Cursor cursor = sqLiteDatabase.rawQuery(query, new String[]{"0"});
         while (cursor.moveToNext()) {
@@ -136,49 +139,44 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
         return status;
     }
 
-    public String[] getDetails(String phone, String product) {
-        String[] list = new String[7];
+    public String[] getDetails(String name, String product) {
+        String trimmedName = name.replaceAll(" ", "");
+        String[] list = new String[6];
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         String query = String.format(
-                "SELECT %s, %s, %s, %s , %s, %s, %s FROM %s WHERE %s= ?",
+                "SELECT %s, %s, %s , %s, %s, %s FROM %s WHERE %s= ?",
                 DatabaseConstants.ORDER_STATUS_COLUMN,
-                DatabaseConstants.NAME_COLUMN,
                 DatabaseConstants.ADDRESS_COLUMN,
                 DatabaseConstants.PRODUCT_COLUMN,
                 DatabaseConstants.ORDER_PLACE_COLUMN,
                 DatabaseConstants.DELIVERY_TIME_COLUMN,
                 DatabaseConstants.CURRENT_TIME_DATE,
-
-                                ("table" + phone),
+                                ("table" + trimmedName),
                 DatabaseConstants.PRODUCT_COLUMN);
         Cursor cursor = sqLiteDatabase.rawQuery(query, new String[]{product});
         while (cursor.moveToNext()) {
-            list[0] = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.NAME_COLUMN)));
-            list[1] = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.ADDRESS_COLUMN)));
-            list[2] = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.PRODUCT_COLUMN)));
-            list[3] = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.ORDER_PLACE_COLUMN)));
-            list[4] = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.ORDER_STATUS_COLUMN)));
-            list[5] = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.DELIVERY_TIME_COLUMN)));
-            list[6] = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.CURRENT_TIME_DATE)));
+            list[0] = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.ADDRESS_COLUMN)));
+            list[1] = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.PRODUCT_COLUMN)));
+            list[2] = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.ORDER_PLACE_COLUMN)));
+            list[3] = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.ORDER_STATUS_COLUMN)));
+            list[4] = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.DELIVERY_TIME_COLUMN)));
+            list[5] = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.CURRENT_TIME_DATE)));
         }
         sqLiteDatabase.close();
         return list;
     }
 
-    public String getAddress(String phone, String product) {
-        String delivery = null;
+    public String getLatestOrder(String name) {
+        String latestOrder = null;
+        String trimmedName = name.replaceAll(" ", "");
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        String query = String.format(
-                "SELECT %s FROM %s WHERE %s= ?",
-                DatabaseConstants.ADDRESS_COLUMN,
-                ("table" + phone),
-                DatabaseConstants.PRODUCT_COLUMN);
-        Cursor cursor = sqLiteDatabase.rawQuery(query, new String[]{product});
-        while (cursor.moveToNext()) {
-            delivery = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.ORDER_STATUS_COLUMN)));
+        String query = "SELECT * FROM " + ("table"+trimmedName) +" ORDER BY "
+                +DatabaseConstants.CURRENT_TIME_DATE +" DESC LIMIT 1";
+        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+        while(cursor.moveToNext()) {
+            latestOrder = cursor.getString(cursor.getColumnIndex(DatabaseConstants.PRODUCT_COLUMN));
         }
-        sqLiteDatabase.close();
-        return delivery;
+        return latestOrder;
     }
 
 //    public void updateCategory(String name) {
