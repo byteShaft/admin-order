@@ -42,7 +42,7 @@ public class OrderFragment  extends Fragment  implements AdapterView.OnItemClick
     public void onResume() {
         super.onResume();
         ordersPhoneNumber = null;
-        ordersPhoneNumber = mDatabaseHelpers.getAllPhoneNumbers();
+        ordersPhoneNumber = mDatabaseHelpers.getAllCustomerName();
         mArrayAdapter = new PhoneArrayAdapter(getContext(), R.layout.row,
                 ordersPhoneNumber);
         mListView.setAdapter(mArrayAdapter);
@@ -84,7 +84,7 @@ public class OrderFragment  extends Fragment  implements AdapterView.OnItemClick
             }
             holder.number.setText(name);
             if (mDatabaseHelpers.getShippingStatus(name)) {
-                holder.status.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_done_gray));
+                holder.status.setBackgroundDrawable(getResources().getDrawable(R.drawable.white_done));
             } else {
                 holder.status.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_done_green));
 

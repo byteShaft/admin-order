@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:layout_margin="2dp"
-    android:padding="5dp"
+    android:padding="2dp"
+    android:background="#D3D3D3"
     android:weightSum="100">
 
     <LinearLayout
@@ -32,7 +33,7 @@
 
     <ImageView
         android:id="@+id/status_for_user"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:layout_width="20dp"
         android:layout_height="20dp" />
 </LinearLayout>
