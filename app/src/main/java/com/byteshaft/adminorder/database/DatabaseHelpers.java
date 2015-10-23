@@ -257,6 +257,14 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
         return list;
     }
 
+        public void deleteItem(String value) {
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        sqLiteDatabase.delete(DatabaseConstantsForDelivery.DELIVERED_TABLE_NAME,
+                DatabaseConstants.CURRENT_TIME_DATE +
+                "=?", new String[]{value});
+        sqLiteDatabase.close();
+    }
+
 //    public void updateCategory(String name) {
 //        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 //        ContentValues values = new ContentValues();
