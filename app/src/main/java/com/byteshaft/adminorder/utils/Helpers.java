@@ -15,7 +15,7 @@ public class Helpers extends ContextWrapper {
 
     public static String getTimeStampForDatabase() {
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm-dd-MMM-yyyy");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss-dd-MMM-yyyy");
         simpleDateFormat.setTimeZone(TimeZone.getDefault());
         return simpleDateFormat.format(calendar.getTime());
     }

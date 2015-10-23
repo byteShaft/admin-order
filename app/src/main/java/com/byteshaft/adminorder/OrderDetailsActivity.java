@@ -10,23 +10,23 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.byteshaft.adminorder.database.DatabaseHelpers;
 
 import java.util.ArrayList;
 
-public class OrderDetailsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
+public class OrderDetailsActivity extends AppCompatActivity {
 
     private ListView mListView;
     private String mName;
     private DatabaseHelpers mDatabaseHelpers;
     private ArrayList<String> mArrayList;
-    private static String sCurrentClickValue;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,19 +38,19 @@ public class OrderDetailsActivity extends AppCompatActivity implements AdapterVi
         mName = getIntent().getStringExtra("name");
         setTitle(mName);
         mListView = (ListView) findViewById(R.id.detail_listview);
-        mListView.setOnItemClickListener(this);
     }
+
 
     @Override
     protected void onResume() {
         super.onResume();
         mArrayList = null;
-        mArrayList = mDatabaseHelpers.getAllProducts(("table"+ mName));
+        mArrayList = mDatabaseHelpers.getAllProducts(("table" + mName));
         ArrayAdapter arrayAdapter = new DetailsArrayAdapter(getApplicationContext(),
                 R.layout.single_detail_layout, mArrayList);
         mListView.setAdapter(arrayAdapter);
-
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -63,38 +63,50 @@ public class OrderDetailsActivity extends AppCompatActivity implements AdapterVi
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        sCurrentClickValue = parent.getItemAtPosition(position).toString();
+    class DetailsArrayAdapter extends ArrayAdapter<String>  {
 
-    }
-
-    class DetailsArrayAdapter extends ArrayAdapter<String> implements View.OnClickListener {
 
         public DetailsArrayAdapter(Context context, int resource, ArrayList<String> videos) {
             super(context, resource, videos);
         }
 
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder;
+            final ViewHolder holder;
             if (convertView == null) {
                 LayoutInflater inflater = getLayoutInflater();
                 convertView = inflater.inflate(R.layout.single_detail_layout, parent, false);
                 holder = new ViewHolder();
                 holder.product = (TextView) convertView.findViewById(R.id.product);
                 holder.address = (TextView) convertView.findViewById(R.id.address);
-                holder.status = (ImageView) convertView.findViewById(R.id.status);
+                holder.switchStatus = (Switch) convertView.findViewById(R.id.switchStatus);
                 holder.deliveryTime = (TextView) convertView.findViewById(R.id.deliveryTime);
                 holder.orderPlace = (TextView) convertView.findViewById(R.id.orderPlace);
                 holder.receivingTime = (TextView) convertView.findViewById(R.id.receiveTime);
                 convertView.setTag(holder);
-                holder.status.setOnClickListener(this);
+                holder.switchStatus.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        System.out.println(isChecked);
+                        if (isChecked) {
+                            holder.switchStatus.setText("Delivered");
+                            mDatabaseHelpers.updateStatus(mName, "1",
+                                    holder.receivingTime.getText().toString());
+                            mDatabaseHelpers.addEntryToDeliveredTable(mName,
+                                    holder.address.getText().toString(),
+                                    holder.product.getText().toString(),
+                                    holder.orderPlace.getText().toString(),
+                                    holder.deliveryTime.getText().toString(),
+                                    holder.receivingTime.getText().toString());
+                            holder.switchStatus.setChecked(true);
+                        }
+                    }
+                });
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
             String currentName = mArrayList.get(position);
-            System.out.println(currentName);
             String[] details = mDatabaseHelpers.getDetails(mName, currentName);
             holder.product.setText(details[1]);
             holder.address.setText(details[0]);
@@ -102,25 +114,20 @@ public class OrderDetailsActivity extends AppCompatActivity implements AdapterVi
             holder.deliveryTime.setText(details[4]);
             holder.receivingTime.setText(details[5]);
             String status = details[3];
-            if (status.equals("0")) {
-                holder.status.setBackgroundDrawable(getResources().getDrawable(R.drawable.white_done));
-            } else {
-                holder.status.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_done_green));
+            if (status != null) {
+                if (status.equals("0")) {
+                    holder.switchStatus.setChecked(false);
+                    holder.switchStatus.setText("pending");
+                } else {
+                    holder.switchStatus.setChecked(true);
+                    holder.switchStatus.setText("Delivered");
+                }
             }
             return convertView;
         }
 
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.status:
-                    System.out.println(sCurrentClickValue);
-
-                    break;
-            }
-
-        }
     }
+
 
     static class ViewHolder {
         public TextView product;
@@ -128,7 +135,6 @@ public class OrderDetailsActivity extends AppCompatActivity implements AdapterVi
         public TextView receivingTime;
         public TextView orderPlace;
         public TextView address;
-        public ImageView status;
+        public Switch switchStatus;
     }
-
 }

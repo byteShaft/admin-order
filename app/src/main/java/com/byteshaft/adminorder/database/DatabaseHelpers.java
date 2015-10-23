@@ -22,12 +22,14 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DatabaseConstants.CREATE_PARENT_TABLE);
+        db.execSQL(DatabaseConstantsForDelivery.CREATE_DELIVERY_TABLE);
         Log.i(AppGlobals.getLogTag(getClass()), "Database created !!!");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS" + DatabaseConstants.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS" + DatabaseConstantsForDelivery.DELIVERED_TABLE_NAME);
         onCreate(db);
     }
 
@@ -45,7 +47,6 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
             myDb.close();
             return true;
         } catch (SQLiteException e) {
-            System.out.println(trimmedName);
             myDb.execSQL(DatabaseConstants.createTable(trimmedName));
             Log.i(AppGlobals.getLogTag(getClass()), "table created");
             createNewEntry(trimmedName, address, product, orderPlace, orderTime, status,
@@ -53,6 +54,24 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
             myDb.close();
             return false;
         }
+    }
+
+
+
+    public void addEntryToDeliveredTable(String name, String address, String productName,
+                                         String orderPlace, String orderTime, String currentTimeDate) {
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DatabaseConstantsForDelivery.DELIVERED_NAME_COLUMN, name);
+        values.put(DatabaseConstantsForDelivery.DELIVERED_ADDRESS_COLUMN, address);
+        values.put(DatabaseConstantsForDelivery.DELIVERED_PRODUCT_COLUMN, productName);
+        values.put(DatabaseConstantsForDelivery.DELIVERED_PLACE_COLUMN, orderPlace);
+        values.put(DatabaseConstantsForDelivery.DELIVERY_TIME_COLUMN, orderTime);
+        values.put(DatabaseConstantsForDelivery.CURRENT_TIME_DATE, currentTimeDate);
+        sqLiteDatabase.insert(DatabaseConstantsForDelivery.DELIVERED_TABLE_NAME, null, values);
+        Log.i(AppGlobals.getLogTag(getClass()), "created New Entry");
+        sqLiteDatabase.close();
+
     }
 
     public void createNewEntry(String name, String address,String productName, String orderPlace,
@@ -67,7 +86,6 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
         values.put(DatabaseConstants.ORDER_STATUS_COLUMN, status);
         values.put(DatabaseConstants.CURRENT_TIME_DATE, currentTimeDate);
         sqLiteDatabase.insert(("table"+name), null, values);
-        Log.i(AppGlobals.getLogTag(getClass()), "created New Entry");
         sqLiteDatabase.close();
     }
 
@@ -118,19 +136,17 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
     }
 
     public boolean getShippingStatus(String value) {
-        String delivery = null;
+        String delivery;
         String trimmedName = value.replaceAll(" ", "");
-        System.out.println(value);
         boolean status = false;
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         String query = String.format(
-                "SELECT %s FROM %s WHERE %s= ?",
-                DatabaseConstants.ORDER_STATUS_COLUMN,
-                ("table" + trimmedName),
-                DatabaseConstants.ORDER_STATUS_COLUMN);
-        Cursor cursor = sqLiteDatabase.rawQuery(query, new String[]{"0"});
+                "SELECT * FROM %s ",
+                ("table" + trimmedName));
+        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
         while (cursor.moveToNext()) {
             delivery = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.ORDER_STATUS_COLUMN)));
+            System.out.println(delivery);
             if (delivery.equals("0")) {
                 status = true;
             }
@@ -177,6 +193,25 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
             latestOrder = cursor.getString(cursor.getColumnIndex(DatabaseConstants.PRODUCT_COLUMN));
         }
         return latestOrder;
+    }
+
+    public void deleteOrder(String tableName, String productName) {
+        String trimmedName = tableName.replaceAll(" ", "");
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        sqLiteDatabase.delete(("table"+trimmedName), DatabaseConstants.CURRENT_TIME_DATE +
+                "=?", new String[]{productName});
+        sqLiteDatabase.close();
+    }
+
+    public void updateStatus(String tableName, String status, String currentDate) {
+        String trimmedName = tableName.replaceAll(" ", "");
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DatabaseConstants.ORDER_STATUS_COLUMN, status);
+        sqLiteDatabase.update(("table" + trimmedName), values, DatabaseConstants.CURRENT_TIME_DATE+" = ?",
+                new String[]{currentDate});
+        sqLiteDatabase.close();
+        Log.i(AppGlobals.getLogTag(getClass()), "updated....");
     }
 
 //    public void updateCategory(String name) {
