@@ -85,7 +85,7 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
         values.put(DatabaseConstants.DELIVERY_TIME_COLUMN, orderTime);
         values.put(DatabaseConstants.ORDER_STATUS_COLUMN, status);
         values.put(DatabaseConstants.CURRENT_TIME_DATE, currentTimeDate);
-        sqLiteDatabase.insert(("table"+name), null, values);
+        sqLiteDatabase.insert(("table" + name), null, values);
         sqLiteDatabase.close();
     }
 
@@ -100,7 +100,7 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
 
     }
 
-    public ArrayList<String> getAllPhoneNumbers() {
+    public ArrayList<String> getAllCustomerName() {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         String query = "SELECT * FROM " + DatabaseConstants.TABLE_NAME + " ORDER BY " +
                 DatabaseConstants.CURRENT_TIME_DATE + " DESC";
@@ -212,6 +212,57 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
                 new String[]{currentDate});
         sqLiteDatabase.close();
         Log.i(AppGlobals.getLogTag(getClass()), "updated....");
+    }
+
+    public ArrayList<String> getAllDeliveredProductsDates() {
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        String query = "SELECT * FROM " + DatabaseConstantsForDelivery.DELIVERED_TABLE_NAME + " ORDER BY " +
+                DatabaseConstants.CURRENT_TIME_DATE + " DESC";
+        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+        ArrayList<String> arrayList = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            String itemname = cursor.getString(cursor.getColumnIndex(
+                    DatabaseConstantsForDelivery.CURRENT_TIME_DATE));
+            if (itemname != null) {
+                arrayList.add(itemname);
+            }
+        }
+        sqLiteDatabase.close();
+        return arrayList;
+    }
+
+    public String[] getDeliveredDetails(String date) {
+        String[] list = new String[6];
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        String query = String.format(
+                "SELECT  %s, %s , %s, %s FROM %s WHERE %s= ?",
+                DatabaseConstantsForDelivery.DELIVERED_ADDRESS_COLUMN,
+                DatabaseConstantsForDelivery.DELIVERED_PRODUCT_COLUMN,
+                DatabaseConstantsForDelivery.DELIVERED_PLACE_COLUMN,
+                DatabaseConstantsForDelivery.DELIVERY_TIME_COLUMN,
+                DatabaseConstantsForDelivery.DELIVERED_TABLE_NAME,
+                DatabaseConstantsForDelivery.CURRENT_TIME_DATE);
+        Cursor cursor = sqLiteDatabase.rawQuery(query, new String[]{date});
+        while (cursor.moveToNext()) {
+            list[0] = (cursor.getString(cursor.getColumnIndex(
+                    DatabaseConstantsForDelivery.DELIVERED_ADDRESS_COLUMN)));
+            list[1] = (cursor.getString(cursor.getColumnIndex(
+                    DatabaseConstantsForDelivery.DELIVERED_PRODUCT_COLUMN)));
+            list[2] = (cursor.getString(cursor.getColumnIndex(
+                    DatabaseConstantsForDelivery.DELIVERED_PLACE_COLUMN)));
+            list[3] = (cursor.getString(cursor.getColumnIndex(
+                    DatabaseConstantsForDelivery.DELIVERY_TIME_COLUMN)));
+        }
+        sqLiteDatabase.close();
+        return list;
+    }
+
+        public void deleteItem(String value) {
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        sqLiteDatabase.delete(DatabaseConstantsForDelivery.DELIVERED_TABLE_NAME,
+                DatabaseConstants.CURRENT_TIME_DATE +
+                "=?", new String[]{value});
+        sqLiteDatabase.close();
     }
 
 //    public void updateCategory(String name) {

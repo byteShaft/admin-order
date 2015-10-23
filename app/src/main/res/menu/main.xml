@@ -1,4 +1,13 @@
 <menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
+
+    <item
+        android:title="delete"
+        app:showAsAction="never"
+        android:id="@+id/delete"
+        android:icon="@drawable/delete">
+    </item>
 
 </menu>
