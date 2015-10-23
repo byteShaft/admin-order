@@ -32,6 +32,7 @@
 
     <ImageView
         android:id="@+id/status_for_user"
+        android:layout_marginTop="10dp"
         android:layout_width="20dp"
         android:layout_height="20dp" />
 </LinearLayout>

@@ -29,7 +29,7 @@ public class DatabaseConstants {
                         ORDER_PLACE_COLUMN + " TEXT , " +
                         DELIVERY_TIME_COLUMN + " TEXT , " +
                         ORDER_STATUS_COLUMN + " TEXT , " +
-                        CURRENT_TIME_DATE + " TEXT " +
+                        CURRENT_TIME_DATE + " TEXT UNIQUE " +
                         " ) ";
 
     }

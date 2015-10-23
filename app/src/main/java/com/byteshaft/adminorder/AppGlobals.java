@@ -20,10 +20,9 @@ public class AppGlobals extends Application {
     public void onCreate() {
         super.onCreate();
         sContext = getApplicationContext();
-        Parse.initialize(this, APP_ID , CLIENT_ID);
+        Parse.initialize(this, APP_ID, CLIENT_ID);
         ParseInstallation installation = ParseInstallation.getCurrentInstallation();
         installation.put("admin", "test");
-        installation.put("test", "test");
         installation.saveInBackground();
     }
 

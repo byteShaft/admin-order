@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,8 +79,9 @@ public class OrderFragment  extends Fragment  implements AdapterView.OnItemClick
             }
             String name = ordersPhoneNumber.get(position);
             String latestItem = mDatabaseHelpers.getLatestOrder(name);
-            Log.i("that", latestItem);
-            holder.latestProduct.setText(latestItem);
+            if (latestItem != null) {
+                holder.latestProduct.setText(latestItem);
+            }
             holder.number.setText(name);
             if (mDatabaseHelpers.getShippingStatus(name)) {
                 holder.status.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_done_gray));
