@@ -70,31 +70,34 @@ public class OrderFragment  extends Fragment  implements AdapterView.OnItemClick
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 convertView = inflater.inflate(R.layout.row, parent, false);
                 holder = new ViewHolder();
-                holder.number = (TextView) convertView.findViewById(R.id.number);
+                holder.name = (TextView) convertView.findViewById(R.id.number);
                 holder.latestProduct = (TextView) convertView.findViewById(R.id.latestProducts);
-                holder.status = (ImageView) convertView.findViewById(R.id.status_for_user);
+                   holder.status = (ImageView) convertView.findViewById(R.id.status_for_user);
+                holder.phoneNumber = (TextView) convertView.findViewById(R.id.phoneNumber);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
             String name = ordersPhoneNumber.get(position);
             String latestItem = mDatabaseHelpers.getLatestOrder(name);
+            String[] number = mDatabaseHelpers.getPhoneNumber(name);
+            holder.phoneNumber.setText(number[0]);
             if (latestItem != null) {
                 holder.latestProduct.setText(latestItem);
             }
-            holder.number.setText(name);
+            holder.name.setText(name);
             if (mDatabaseHelpers.getShippingStatus(name)) {
                 holder.status.setBackgroundDrawable(getResources().getDrawable(R.drawable.white_done));
             } else {
                 holder.status.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_done_green));
-
             }
             return convertView;
         }
     }
 
     static class ViewHolder {
-        public TextView number;
+        public TextView name;
+        public TextView phoneNumber;
         public TextView latestProduct;
         public ImageView status;
     }

@@ -18,6 +18,7 @@ public class DatabaseConstants {
     public static final String CREATE_PARENT_TABLE = "CREATE TABLE " +
     TABLE_NAME + "(" +
     NAME_COLUMN + " TEXT  PRIMARY KEY, " +
+            MOBILE_NUMBER_COLUMN + " TEXT ," +
             CURRENT_TIME_DATE + " TEXT " +
             " ) ";
 
