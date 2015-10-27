@@ -20,12 +20,6 @@ import org.json.JSONObject;
 public class CustomPushParseReceiver extends ParsePushBroadcastReceiver {
 
     private Intent parseIntent;
-    private String personName;
-    private String phoneNumber;
-    private String address;
-    private String product;
-    private String from;
-    private String deliveryTime;
     private DatabaseHelpers mDatabaseHelpers;
 
     public CustomPushParseReceiver() {
@@ -44,6 +38,7 @@ public class CustomPushParseReceiver extends ParsePushBroadcastReceiver {
             String name = json.getString("name");
             String address = json.getString("address");
             String product = json.getString("product");
+            String phoneNumber = json.getString("phone");
             // etc that departmental store
             String from = json.getString("from");
             String delivery = json.getString("delivery_time");
@@ -51,7 +46,7 @@ public class CustomPushParseReceiver extends ParsePushBroadcastReceiver {
             mDatabaseHelpers.insertValuesCheckIfNotExist(name, address, product, from, delivery,
                     "0", Helpers.getTimeStampForDatabase());
             sendResponseToUser(AppGlobals.sSenderId);
-            mDatabaseHelpers.insertIntParentColumn(name,Helpers.getTimeStampForDatabase());
+            mDatabaseHelpers.insertIntParentColumn(name, phoneNumber, Helpers.getTimeStampForDatabase());
             parsePushJson(product);
         } catch (JSONException e) {
             Log.e(AppGlobals.getLogTag(getClass()), "Push message json exception: " + e.getMessage());

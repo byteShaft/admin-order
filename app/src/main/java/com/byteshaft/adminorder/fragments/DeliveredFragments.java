@@ -107,7 +107,6 @@ public class DeliveredFragments extends ListFragment {
 
             }
         });
-        getListView().setDivider(null);
 //        registerForContextMenu(getListView());
     }
 

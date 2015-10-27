@@ -39,7 +39,6 @@ public class NotificationUtils {
                     .setAutoCancel(true)
                     .setContentTitle(title)
                     .setContentText(message)
-                    .setStyle(inboxStyle)
                     .setContentIntent(resultPendingIntent)
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                     .setLargeIcon(BitmapFactory.decodeResource(AppGlobals.getContext().getResources(), icon))

@@ -4,6 +4,7 @@ package com.byteshaft.adminorder.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -89,12 +90,17 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
         sqLiteDatabase.close();
     }
 
-    public void insertIntParentColumn(String phone, String timeDate) {
+    public void insertIntParentColumn(String name, String phone, String timeDate) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DatabaseConstants.NAME_COLUMN, phone);
+        values.put(DatabaseConstants.NAME_COLUMN, name);
+        values.put(DatabaseConstants.MOBILE_NUMBER_COLUMN, phone);
         values.put(DatabaseConstants.CURRENT_TIME_DATE, timeDate);
-        sqLiteDatabase.insert(DatabaseConstants.TABLE_NAME, null, values);
+        try {
+            sqLiteDatabase.insertOrThrow(DatabaseConstants.TABLE_NAME, null, values);
+        } catch (SQLiteConstraintException ignore) {
+            Log.i(AppGlobals.getLogTag(getClass()), "user already exist");
+        }
         Log.i(AppGlobals.getLogTag(getClass()), "created New Entry");
         sqLiteDatabase.close();
 
@@ -221,10 +227,10 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.rawQuery(query, null);
         ArrayList<String> arrayList = new ArrayList<>();
         while (cursor.moveToNext()) {
-            String itemname = cursor.getString(cursor.getColumnIndex(
+            String itemName = cursor.getString(cursor.getColumnIndex(
                     DatabaseConstantsForDelivery.CURRENT_TIME_DATE));
-            if (itemname != null) {
-                arrayList.add(itemname);
+            if (itemName != null) {
+                arrayList.add(itemName);
             }
         }
         sqLiteDatabase.close();
@@ -263,6 +269,22 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
                 DatabaseConstants.CURRENT_TIME_DATE +
                 "=?", new String[]{value});
         sqLiteDatabase.close();
+    }
+
+    public String[] getPhoneNumber(String name) {
+        String[] list = new String[1];
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        String query = String.format(
+                "SELECT %s FROM %s WHERE %s= ?",
+                DatabaseConstants.MOBILE_NUMBER_COLUMN,
+                DatabaseConstants.TABLE_NAME,
+                DatabaseConstants.NAME_COLUMN);
+        Cursor cursor = sqLiteDatabase.rawQuery(query, new String[]{name});
+        while (cursor.moveToNext()) {
+            list[0] = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.MOBILE_NUMBER_COLUMN)));
+        }
+        sqLiteDatabase.close();
+        return list;
     }
 
 //    public void updateCategory(String name) {

@@ -13,7 +13,6 @@ public class AppGlobals extends Application {
     public static final String APP_ID = "EieYzwuvJCqr2xFlwy8n7MAuofRj4LHa1F1MCudO";
     public static final String CLIENT_ID = "9sIi4bCDTLYXzd5y0JG5pBaAwaqzJVzlZnfiTvdk";
     public static final int NOTIFICATION_ID = 2112;
-    public static final String PUSH_RESPONSE = "we have received  your request";
     public static String sSenderId;
 
     @Override
@@ -22,7 +21,7 @@ public class AppGlobals extends Application {
         sContext = getApplicationContext();
         Parse.initialize(this, APP_ID, CLIENT_ID);
         ParseInstallation installation = ParseInstallation.getCurrentInstallation();
-        installation.put("admin", "admin_order_receiver");
+        installation.put("admin", "test");
         installation.saveInBackground();
     }
 

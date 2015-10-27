@@ -63,7 +63,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    class DetailsArrayAdapter extends ArrayAdapter<String>  {
+    class DetailsArrayAdapter extends ArrayAdapter<String> {
 
 
         public DetailsArrayAdapter(Context context, int resource, ArrayList<String> videos) {
@@ -85,24 +85,6 @@ public class OrderDetailsActivity extends AppCompatActivity {
                 holder.orderPlace = (TextView) convertView.findViewById(R.id.orderPlace);
                 holder.receivingTime = (TextView) convertView.findViewById(R.id.receiveTime);
                 convertView.setTag(holder);
-                holder.switchStatus.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        System.out.println(isChecked);
-                        if (isChecked) {
-                            holder.switchStatus.setText("Delivered");
-                            mDatabaseHelpers.updateStatus(mName, "1",
-                                    holder.receivingTime.getText().toString());
-                            mDatabaseHelpers.addEntryToDeliveredTable(mName,
-                                    holder.address.getText().toString(),
-                                    holder.product.getText().toString(),
-                                    holder.orderPlace.getText().toString(),
-                                    holder.deliveryTime.getText().toString(),
-                                    holder.receivingTime.getText().toString());
-                            holder.switchStatus.setChecked(true);
-                        }
-                    }
-                });
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
@@ -121,11 +103,35 @@ public class OrderDetailsActivity extends AppCompatActivity {
                 } else {
                     holder.switchStatus.setChecked(true);
                     holder.switchStatus.setText("Delivered");
+                    holder.switchStatus.setClickable(false);
                 }
             }
+            holder.switchStatus.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    switch (buttonView.getId()) {
+                        case R.id.switchStatus:
+                            if (!holder.switchStatus.isChecked()) {
+                                break;
+                            } else {
+                                holder.switchStatus.setText("Delivered");
+                                mDatabaseHelpers.updateStatus(mName, "1",
+                                        holder.receivingTime.getText().toString());
+                                mDatabaseHelpers.addEntryToDeliveredTable(mName,
+                                        holder.address.getText().toString(),
+                                        holder.product.getText().toString(),
+                                        holder.orderPlace.getText().toString(),
+                                        holder.deliveryTime.getText().toString(),
+                                        holder.receivingTime.getText().toString());
+                                holder.switchStatus.setChecked(true);
+                                holder.switchStatus.setClickable(false);
+                            }
+                            break;
+                    }
+                }
+            });
             return convertView;
         }
-
     }
 
 
