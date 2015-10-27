@@ -47,7 +47,6 @@ public class OrderFragment  extends Fragment  implements AdapterView.OnItemClick
                 ordersPhoneNumber);
         mListView.setAdapter(mArrayAdapter);
         mListView.setOnItemClickListener(this);
-        mListView.setDivider(null);
     }
 
     @Override

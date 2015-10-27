@@ -19,7 +19,9 @@
         android:layout_marginTop="50dp"
         android:choiceMode="multipleChoice"
         android:clickable="true"
+        android:divider="@drawable/divider"
         android:id="@android:id/list"
+        android:dividerHeight="2dp"
         android:checkMark="?android:attr/listChoiceIndicatorMultiple"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
