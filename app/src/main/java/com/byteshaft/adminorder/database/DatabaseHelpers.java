@@ -4,6 +4,7 @@ package com.byteshaft.adminorder.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -95,7 +96,11 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
         values.put(DatabaseConstants.NAME_COLUMN, name);
         values.put(DatabaseConstants.MOBILE_NUMBER_COLUMN, phone);
         values.put(DatabaseConstants.CURRENT_TIME_DATE, timeDate);
-        sqLiteDatabase.insert(DatabaseConstants.TABLE_NAME, null, values);
+        try {
+            sqLiteDatabase.insertOrThrow(DatabaseConstants.TABLE_NAME, null, values);
+        } catch (SQLiteConstraintException ignore) {
+            Log.i(AppGlobals.getLogTag(getClass()), "user already exist");
+        }
         Log.i(AppGlobals.getLogTag(getClass()), "created New Entry");
         sqLiteDatabase.close();
 
