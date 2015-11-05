@@ -1,7 +1,9 @@
 package com.byteshaft.adminorder.fragments;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,7 +23,7 @@ import com.byteshaft.adminorder.database.DatabaseHelpers;
 
 import java.util.ArrayList;
 
-public class OrderFragment  extends Fragment  implements AdapterView.OnItemClickListener {
+public class OrderFragment  extends Fragment  implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     private View mBaseView;
     private ArrayList<String> ordersPhoneNumber;
@@ -37,7 +39,6 @@ public class OrderFragment  extends Fragment  implements AdapterView.OnItemClick
         return mBaseView;
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -47,6 +48,7 @@ public class OrderFragment  extends Fragment  implements AdapterView.OnItemClick
                 ordersPhoneNumber);
         mListView.setAdapter(mArrayAdapter);
         mListView.setOnItemClickListener(this);
+        mListView.setOnItemLongClickListener(this);
     }
 
     @Override
@@ -56,6 +58,33 @@ public class OrderFragment  extends Fragment  implements AdapterView.OnItemClick
         startActivity(intent);
 
     }
+
+    @Override
+    public boolean onItemLongClick(final AdapterView<?> parent, View view, final int position, long id) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Delete");
+        builder.setMessage("Do you want to delete this Rule?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mDatabaseHelpers.dropTable(parent.getItemAtPosition(position).toString());
+                mDatabaseHelpers.deleteOrder(parent.getItemAtPosition(position).toString());
+                String item = mArrayAdapter.getItem(position);
+                mArrayAdapter.remove(item);
+                mArrayAdapter.notifyDataSetChanged();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+
+        return true;
+    }
+
     class PhoneArrayAdapter extends ArrayAdapter<String> {
 
         public PhoneArrayAdapter(Context context, int resource, ArrayList<String> videos) {

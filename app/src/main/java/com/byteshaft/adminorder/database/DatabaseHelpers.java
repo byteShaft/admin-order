@@ -201,10 +201,9 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
         return latestOrder;
     }
 
-    public void deleteOrder(String tableName, String productName) {
-        String trimmedName = tableName.replaceAll(" ", "");
+    public void deleteOrder(String productName) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-        sqLiteDatabase.delete(("table"+trimmedName), DatabaseConstants.CURRENT_TIME_DATE +
+        sqLiteDatabase.delete(DatabaseConstants.TABLE_NAME, DatabaseConstants.NAME_COLUMN +
                 "=?", new String[]{productName});
         sqLiteDatabase.close();
     }
@@ -285,6 +284,12 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
         }
         sqLiteDatabase.close();
         return list;
+    }
+
+    public void dropTable(String tableName) {
+        String trimmedName = tableName.replaceAll(" ", "");
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ("table"+trimmedName));
     }
 
 //    public void updateCategory(String name) {
