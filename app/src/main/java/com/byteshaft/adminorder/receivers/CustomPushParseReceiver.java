@@ -79,6 +79,6 @@ public class CustomPushParseReceiver extends ParsePushBroadcastReceiver {
     private void sendResponseToUser(String senderId) {
         ParseQuery<ParseInstallation> parseQuery = ParseQuery.getQuery(ParseInstallation.class);
         parseQuery.whereEqualTo("user", senderId);
-        ParsePush.sendMessageInBackground("Thank you we have received your order", parseQuery);
+        ParsePush.sendMessageInBackground("", parseQuery);
     }
 }

@@ -27,7 +27,7 @@ import com.byteshaft.adminorder.database.DatabaseHelpers;
 
 import java.util.ArrayList;
 
-public class DeliveredFragments extends ListFragment {
+public class  DeliveredFragments extends ListFragment {
 
     private View mBaseView;
     private ListView mListView;

@@ -1,7 +1,9 @@
 package com.byteshaft.adminorder.fragments;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,7 +23,7 @@ import com.byteshaft.adminorder.database.DatabaseHelpers;
 
 import java.util.ArrayList;
 
-public class OrderFragment  extends Fragment  implements AdapterView.OnItemClickListener {
+public class OrderFragment  extends Fragment  implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     private View mBaseView;
     private ArrayList<String> ordersPhoneNumber;
@@ -37,7 +39,6 @@ public class OrderFragment  extends Fragment  implements AdapterView.OnItemClick
         return mBaseView;
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -47,6 +48,7 @@ public class OrderFragment  extends Fragment  implements AdapterView.OnItemClick
                 ordersPhoneNumber);
         mListView.setAdapter(mArrayAdapter);
         mListView.setOnItemClickListener(this);
+        mListView.setOnItemLongClickListener(this);
     }
 
     @Override
@@ -56,10 +58,42 @@ public class OrderFragment  extends Fragment  implements AdapterView.OnItemClick
         startActivity(intent);
 
     }
+
+    @Override
+    public boolean onItemLongClick(final AdapterView<?> parent, View view, final int position, long id) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Delete");
+        builder.setMessage("Do you want to delete this order?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mDatabaseHelpers.dropTable(parent.getItemAtPosition(position).toString());
+                mDatabaseHelpers.deleteOrder(parent.getItemAtPosition(position).toString());
+                String item = mArrayAdapter.getItem(position);
+                mArrayAdapter.remove(item);
+                mArrayAdapter.notifyDataSetChanged();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+
+        return true;
+    }
+
     class PhoneArrayAdapter extends ArrayAdapter<String> {
 
-        public PhoneArrayAdapter(Context context, int resource, ArrayList<String> videos) {
-            super(context, resource, videos);
+        private int mResource;
+        private ArrayList<String> arrayList;
+
+        public PhoneArrayAdapter(Context context, int resource, ArrayList<String> items) {
+            super(context, resource, items);
+            this.mResource = resource;
+            this.arrayList = items;
         }
 
         @Override
@@ -67,7 +101,7 @@ public class OrderFragment  extends Fragment  implements AdapterView.OnItemClick
             ViewHolder holder;
             if (convertView == null) {
                 LayoutInflater inflater = getActivity().getLayoutInflater();
-                convertView = inflater.inflate(R.layout.row, parent, false);
+                convertView = inflater.inflate(mResource, parent, false);
                 holder = new ViewHolder();
                 holder.name = (TextView) convertView.findViewById(R.id.number);
                 holder.latestProduct = (TextView) convertView.findViewById(R.id.latestProducts);
@@ -77,7 +111,7 @@ public class OrderFragment  extends Fragment  implements AdapterView.OnItemClick
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            String name = ordersPhoneNumber.get(position);
+            String name = arrayList.get(position);
             String latestItem = mDatabaseHelpers.getLatestOrder(name);
             String[] number = mDatabaseHelpers.getPhoneNumber(name);
             holder.phoneNumber.setText(number[0]);
