@@ -142,20 +142,14 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
     }
 
     public boolean getShippingStatus(String value) {
-        String delivery;
-        String trimmedName = value.replaceAll(" ", "");
         boolean status = false;
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-        String query = String.format(
-                "SELECT * FROM %s ",
-                ("table" + trimmedName));
-        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
-        while (cursor.moveToNext()) {
-            delivery = (cursor.getString(cursor.getColumnIndex(DatabaseConstants.ORDER_STATUS_COLUMN)));
-            System.out.println(delivery);
-            if (delivery.equals("0")) {
-                status = true;
-            }
+        String trimmedName = value.replaceAll(" ", "");
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM " + ("table"+trimmedName) + " WHERE "+
+                DatabaseConstants.ORDER_STATUS_COLUMN+ " = '" + "0" + "'", null);
+        System.out.println(cursor.getCount() > 0);
+        if (cursor.getCount() > 0) { // This will get the number of rows
+            status = true;
         }
         sqLiteDatabase.close();
         return status;
